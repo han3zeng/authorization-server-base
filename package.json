@@ -1,0 +1,53 @@
+{
+  "name": "authorization-server",
+  "version": "1.0.0",
+  "description": "the authorization server for login system",
+  "main": "index.js",
+  "scripts": {
+    "eslint": "node_modules/.bin/eslint ",
+    "test": "NODE_ENV=test mocha --recursive --exit",
+    "start:dev": "NODE_ENV=developmen PORT=3030 nodemon server/server.js",
+    "start": "NODE_ENV=production node server/server.js",
+    "gcloud:deploy": "gcloud app deploy --project authorization-server --version manually deploy test",
+    "gcloud:browse": "gcloud app browse"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanyulo/authorization-server.git"
+  },
+  "keywords": [
+    "authorization",
+    "authentication",
+    "node",
+    "express",
+    "mongodb",
+    "mongoose"
+  ],
+  "author": "Hanyulo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hanyulo/authorization-server/issues"
+  },
+  "homepage": "https://github.com/hanyulo/authorization-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.15",
+    "mongodb": "^3.3.2",
+    "mongoose": "^5.7.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.4.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^6.2.0",
+    "mongodb-memory-server": "^5.2.3",
+    "nodemon": "^1.19.2",
+    "supertest": "^4.0.2"
+  }
+}

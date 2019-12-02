@@ -1,0 +1,14 @@
+{
+  "extends": "standard",
+  "rules": {
+    "semi": [2, 'always']
+  },
+  "globals": {
+    "describe": "writable",
+    "it": "writable",
+    "before": "writable",
+    "after": "writable",
+    "beforeAll": "writable",
+    "afterAll": "writable"
+  }
+}
