@@ -16,6 +16,4 @@ const clientAPIKeyValidation = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  clientAPIKeyValidation
-};
+module.exports = clientAPIKeyValidation;

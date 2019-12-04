@@ -1,18 +1,21 @@
-const error = ({ res, status, message }) => {
+const error = ({ res, status, errorMessage }) => {
   res.status(status).json({
     ok: false,
     status,
-    data: {
-      message
+    response: {
+      errorMessage
     }
   });
 };
 
-const success = ({ res, status, data }) => {
+const success = ({ res, status, data, statusCode }) => {
   res.status(status).json({
     ok: true,
     status,
-    data
+    response: {
+      data,
+      statusCode
+    }
   });
 };
 

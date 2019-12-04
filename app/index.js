@@ -1,10 +1,10 @@
-/* initialize models */
-require('../db/models/Client');
 // const allowedOrigins = require('../config').allowedOrigins;
 const express = require('express');
 const bodyParser = require('body-parser');
-const { clientAPIKeyValidation } = require('./middlewares/clientAPIKeyValidation');
-const cors = require('./middlewares/cors');
+/* initialize models */
+require('../db/models/Client');
+require('../db/models/User');
+const { cors, clientAPIKeyValidation } = require('./middlewares');
 
 const app = express();
 const jsonParser = bodyParser.json();
@@ -23,5 +23,7 @@ app.use(clientAPIKeyValidation);
 // routes
 const helloWorld = require('../routes/helloWorld');
 helloWorld(app);
+const signUp = require('../routes/signUp');
+signUp(app);
 
 module.exports = app;
