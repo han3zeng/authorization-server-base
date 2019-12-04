@@ -1,35 +1,27 @@
-const allowedOrigins = require('../config').allowedOrigins;
+/* initialize models */
+require('../db/models/Client');
+// const allowedOrigins = require('../config').allowedOrigins;
 const express = require('express');
 const bodyParser = require('body-parser');
+const { clientAPIKeyValidation } = require('./middlewares/clientAPIKeyValidation');
+const cors = require('./middlewares/cors');
 
 const app = express();
 const jsonParser = bodyParser.json();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const cors = (req, res, next) => {
-  const requsterOrigin = req.header.originl;
-  if (allowedOrigins.indexOf(requsterOrigin) > -1) {
-    res.header('Access-Control-Allow-Origin', requsterOrigin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-type');
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-  } else {
-    next();
-  }
-};
 
+/*  Mandatory Set Up */
 app.use(jsonParser);
 app.use(urlencodedParser);
 app.use(cors);
+const generateAPIKey = require('../routes/generateAPIKey');
+generateAPIKey(app);
 
-/* initialize models */
-require('../db/models/Client');
+/* Service */
+app.use(clientAPIKeyValidation);
+
 // routes
 const helloWorld = require('../routes/helloWorld');
-const generateAPIKey = require('../routes/generateAPIKey');
-
 helloWorld(app);
-generateAPIKey(app);
 
 module.exports = app;

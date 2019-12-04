@@ -1,43 +1,17 @@
-const jwt = require('jsonwebtoken');
-const { SECRET_KEY } = require('../constants/credentials');
-const { authRoutes, newSessionRoutes } = require('../config/routeConfig');
+const mongoose = require('mongoose');
+const Client = mongoose.model('Client');
 
-const isNewSessionRequired = (httpMethod, url) => {
-  for (const route of newSessionRoutes) {
-    if (httpMethod === route.method && url === route.path) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const isAuthRequired = (httpMethod, url) => {
-  for (const route of authRoutes) {
-    if (httpMethod === route.method && url === route.path) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const generateToken = (userData) => {
-  return jwt.sign(userData, SECRET_KEY);
-};
-
-const verifyToken = (jwtToken) => {
+const getClientDetails = async (clientAPIKey) => {
   try {
-    return jwt.verify(jwtToken, SECRET_KEY);
+    const doc = await Client.findOne({ apiKey: clientAPIKey });
+    if (doc) {
+      return doc;
+    }
   } catch (e) {
-    console.log('e:', e);
-    return null;
+    throw new Error('There is something during fetching data from mongodb serve');
   }
 };
-
-// const 
 
 module.exports = {
-  isNewSessionRequired,
-  isAuthRequired,
-  generateToken,
-  verifyToken
+  getClientDetails
 };

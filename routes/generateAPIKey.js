@@ -27,7 +27,6 @@ const generateAPIKey = (app) => {
             createdAt: new Date(),
             updatedAt: new Date()
           };
-          console.log('newDoc: ', newDoc);
           Client.create(newDoc, (err, doc) => {
             console.log('newdoc: ', newDoc);
             if (err) {
