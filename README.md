@@ -1,5 +1,5 @@
 # authorization-server
-this is authorization server for login system
+* this is authorization server for login system
 
 
 ## Overview
@@ -10,36 +10,55 @@ this is authorization server for login system
 
 
 ## Key Variables
-    * API_KEY: project authorization
-    * SECRET: key element for one way compression
-    * idToken: user info -> user Authentication
-    * dataToken: service data (cart) -> data integration
-    * accessToken: userAuthentication -> user Authorization
+* API_KEY: project authorization
+* SECRET: key element for one way compression
+* idToken: user info -> user Authentication
+* dataToken: service data (cart) -> data integration
+* accessToken: userAuthentication -> user Authorization
+    * same as password hash
 
 ## Data
 
 #### User Profile
-    * username/account: email
-    * password
-    * fist and last name
-    * age
-    * occupation
-    * region
-    * dat and birth
-    * picture
+* username/account: email
+* password
+* fist and last name
+* age
+* occupation
+* region
+* dat and birth
+* picture
 
 #### Role/Permission
-    * roles
-        1. admin: not available
-        2. editor: assign by admin
-        3. viewer: assign by admin
-    * implementation
-        * scope of access token
+* roles
+    1. admin: not available
+    2. editor: assign by admin
+    3. viewer: assign by admin
+* implementation
+    * scope of access token
 
 ## Terms
-    * client: project which use authorization-server as service
-    * user: single entity who use client as service
+* client: project which use authorization-server as service
+* user: single entity who use client as service
 
+
+## To Do
+* [ ] redis-database for token/session management
+* [ ] set the scope of accessToken
+* [ ] Temporary authorization url should be comprised with random string
+* [ ] login
+    * check if accessToken is in the blacklist
+    * check if the token has expired
+* [ ] blacklist related functions
+    * logout
+    * login
+    * invalid all tokens
+* [ ] encrypt the credentials file
+    * [ref](https://gist.github.com/kzap/5819745)
+    * [ref](https://docs.travis-ci.com/user/encryption-keys/)
 
 ## References
 * [base](https://medium.com/better-programming/authentication-and-authorization-using-jwt-with-node-js-4099b2e6ca1f)
+* authorization code flow
+    * [OAUTH](https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/)
+    * [AUTH0](https://auth0.com/docs/flows/concepts/auth-code)
