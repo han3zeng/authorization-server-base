@@ -6,6 +6,10 @@ const userPrototype = {
   password: String,
   firstName: String,
   lastName: String,
+  authorized: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

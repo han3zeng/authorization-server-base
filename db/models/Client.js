@@ -4,6 +4,9 @@ const clientPrototype = {
   service: String,
   organization: String,
   apiKey: String,
+  redirectUrl: String,
+  origin: String,
+  device: String,
   updatedAt: {
     type: Date,
     default: Date.now
