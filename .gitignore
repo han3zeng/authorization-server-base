@@ -63,3 +63,6 @@ typings/
 # secret
 constants/credentials.js
 app-engine-secrets.json
+
+# system
+.DS_Store
