@@ -1,4 +1,5 @@
 const { getCredentials } = require('../utils');
+const { nodeEnv } = require('../config');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
@@ -7,7 +8,6 @@ const { SECRET_ADMIN_API_KEY } = getCredentials();
 
 const bodyPassValidation = (req, res) => {
   const { adminApiKey, service, organization, redirectUrl, origin, device } = req.body;
-  console.log('SECRET_ADMIN_API_KEY: ', SECRET_ADMIN_API_KEY)
   if (!adminApiKey || (adminApiKey && adminApiKey !== SECRET_ADMIN_API_KEY)) {
     res.status(410).json({
       error: 'Permission Deined'
@@ -38,7 +38,7 @@ const bodyPassValidation = (req, res) => {
 const generateAPIKey = (app) => {
   app.post('/generate-api-key', async (req, res) => {
     const { service, organization, redirectUrl, origin, device } = req.body;
-    if (!bodyPassValidation(req, res)) {
+    if (nodeEnv !== 'test' && !bodyPassValidation(req, res)) {
       return;
     }
     try {
