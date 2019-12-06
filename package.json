@@ -8,7 +8,7 @@
     "test": "NODE_ENV=test mocha --recursive --exit",
     "start:dev": "NODE_ENV=developmen PORT=3030 nodemon server/server.js",
     "start": "NODE_ENV=production node server/server.js",
-    "gcloud:deploy": "gcloud app deploy --project authorization-server --version manually deploy test",
+    "gcloud:deploy": "gcloud app deploy --project aauthorization-server-261201 --version manually deploy test",
     "gcloud:browse": "gcloud app browse"
   },
   "repository": {
