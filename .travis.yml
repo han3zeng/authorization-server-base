@@ -4,7 +4,7 @@ node_js:
 before_install:
   - openssl aes-256-cbc -K $encrypted_703b0bee0b5e_key -iv $encrypted_703b0bee0b5e_iv
     -in client_secret.tar.enc -out client_secret.tar -d
-  - tar -xvf secrets.tar
+  - tar -xvf client_secret.tar
   - mv ./credentials.json ./constants
   - gcloud auth activate-service-account --key-file app_engine_secret.json
 install:
