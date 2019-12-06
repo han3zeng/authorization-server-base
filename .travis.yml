@@ -3,9 +3,9 @@ node_js:
 - 10
 before_install:
 - openssl aes-256-cbc -K $encrypted_703b0bee0b5e_key -iv $encrypted_703b0bee0b5e_iv
-  -in app-engine-secrets.json.enc -out ./app-engine-secrets.json -d
+  -in credentials.json.enc -out ./constants/credentials.json -d
 - openssl aes-256-cbc -K $encrypted_703b0bee0b5e_key -iv $encrypted_703b0bee0b5e_iv
-  -in credentials.js.enc -out ./constants/credentials.js -d
+  -in app-engine-secrets.json.enc -out ./app-engine-secrets.json -d
 - gcloud auth activate-service-account --key-file client-secret.json
 install:
 - gcloud config set project authorization-server-261201

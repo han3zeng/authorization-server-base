@@ -1,11 +1,14 @@
-const { ADMIN } = require('../constants/credentials');
+const { getCredentials } = require('../utils');
 const mongoose = require('mongoose');
-const Client = mongoose.model('Client');
 const jwt = require('jsonwebtoken');
+
+const Client = mongoose.model('Client');
+const { SECRET_ADMIN_API_KEY } = getCredentials();
 
 const bodyPassValidation = (req, res) => {
   const { adminApiKey, service, organization, redirectUrl, origin, device } = req.body;
-  if (!adminApiKey || (adminApiKey && adminApiKey !== ADMIN)) {
+  console.log('SECRET_ADMIN_API_KEY: ', SECRET_ADMIN_API_KEY)
+  if (!adminApiKey || (adminApiKey && adminApiKey !== SECRET_ADMIN_API_KEY)) {
     res.status(410).json({
       error: 'Permission Deined'
     });
@@ -46,7 +49,7 @@ const generateAPIKey = (app) => {
         const token = jwt.sign({
           service,
           organization
-        }, ADMIN);
+        }, SECRET_ADMIN_API_KEY);
         const newDoc = {
           service,
           organization,

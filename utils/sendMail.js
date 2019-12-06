@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
-const { ADMIN_EMAIL, ADMIN_EMAIL_PASSWORD } = require('../constants/credentials');
+const { getCredentials } = require('./index');
+
+const { ADMIN_EMAIL, ADMIN_EMAIL_PASSWORD } = getCredentials();
 
 async function sendMail ({ senderAcount, text, html, target }) {
   // const testAccount = await nodemailer.createTestAccount();

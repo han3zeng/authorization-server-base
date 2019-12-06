@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
-const { urlToObject } = require('../utils');
+const { urlToObject, getCredentials } = require('../utils');
 const { error } = require('../utils/responses');
-const { ACCESS_TOKEN } = require('../constants/credentials');
 const { ISSUER } = require('../constants/payload');
+const { ACCESS_TOKEN } = getCredentials();
 
 const expireAt = (isMillionSecs) => {
   return (dayInterval = 7) => {

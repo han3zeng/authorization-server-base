@@ -4,8 +4,6 @@ const { error } = require('../../utils/responses');
 
 const clientAPIKeyValidation = async (req, res, next) => {
   const clientApiKey = req.get(CLINET_API_KEY);
-  console.log('CLINET_API_KEY: ', CLINET_API_KEY)
-  console.log('clientApiKey: ', clientApiKey)
   if (!clientApiKey) {
     return error({
       res,

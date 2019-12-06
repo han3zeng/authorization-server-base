@@ -61,7 +61,7 @@ typings/
 .next
 
 # secret
-constants/credentials.js
+constants/credentials.*
 app-engine-secrets.json
 
 # system

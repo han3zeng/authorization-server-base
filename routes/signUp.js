@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const sendMail = require('../utils/sendMail');
-const { objectToUrl } = require('../utils');
+const { objectToUrl, getCredentials } = require('../utils');
 const { error, success } = require('../utils/responses');
-const { PASSWORD } = require('../constants/credentials');
 const config = require('../config');
+const { PASSWORD_SECRET_KEY } = getCredentials();
 
 const User = mongoose.model('User');
 const Client = mongoose.model('Client');
@@ -54,7 +54,7 @@ const signUp = (app) => {
       });
     } else {
       try {
-        const hashedPassword = jwt.sign({ email, password }, PASSWORD).split('.')[2];
+        const hashedPassword = jwt.sign({ email, password }, PASSWORD_SECRET_KEY).split('.')[2];
         const newDoc = {
           username,
           email,

@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const objectToUrl = (obj) => {
   try {
     const stringifiedJSON = JSON.stringify(obj);
@@ -18,7 +21,17 @@ const urlToObject = (str) => {
   }
 };
 
+const getCredentials = () => {
+  try {
+    return JSON.parse(fs.readFileSync(path.resolve(__dirname, '../constants/credentials.json')));
+  } catch (e) {
+    console.log('fail to read credentisl: ', e);
+    return {};
+  }
+};
+
 module.exports = {
   urlToObject,
-  objectToUrl
+  objectToUrl,
+  getCredentials
 };
