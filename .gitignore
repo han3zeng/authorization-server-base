@@ -60,8 +60,10 @@ typings/
 # next.js build output
 .next
 
-# secret
-client_secrets/
+# secrets
+app_engine_secret.json
+credentials.json
+client_secret.tar
 
 # system
 .DS_Store
