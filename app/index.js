@@ -1,10 +1,11 @@
-// const allowedOrigins = require('../config').allowedOrigins;
-const express = require('express');
-const bodyParser = require('body-parser');
 /* initialize models */
 require('../db/models/Client');
 require('../db/models/User');
 require('../db/models/Blacklist');
+require('../db/models/Accesslist');
+/* requires */
+const express = require('express');
+const bodyParser = require('body-parser');
 const { cors, clientAPIKeyValidation } = require('./middlewares');
 
 const app = express();

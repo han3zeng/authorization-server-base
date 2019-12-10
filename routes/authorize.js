@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const Accesslist = mongoose.model('Accesslist');
 const { urlToObject, getCredentials } = require('../utils');
 const { error } = require('../utils/responses');
 const { ISSUER } = require('../constants/payload');
@@ -16,20 +17,35 @@ const expireAt = (isMillionSecs) => {
   };
 };
 
-const checkIfUserExist = async (_id) => {
-  const doc = await User.findOne({ _id });
-  if (doc) {
-    return doc;
+const authorizeUser = async (_id) => {
+  const res = await User.updateOne({ _id }, { $set: { authorized: true } });
+};
+
+const checkIfUserAndAccessIdExist = async (_id, attemptAccessId) => {
+  const userDoc = await User.findOne({ _id });
+  const accessIdDoc = await Accesslist.findOne({ userId: _id, accessId: attemptAccessId });
+  const { expireAt, accessId } = accessIdDoc;
+  if (!userDoc || !accessIdDoc) {
+    return null;
+  }
+  try {
+    if ((Date.parse(expireAt) >= Date.now()) && (accessId === attemptAccessId)) {
+      return {
+        userDoc,
+        accessIdDoc
+      };
+    }
+  } catch (e) {
+    return null;
   }
   return null;
 };
 
 const authorize = (app) => {
-  app.get('/oauth/authorize', (req, res) => {
+  app.get('/oauth/authorize', async (req, res) => {
     const { client_id, response_type, state, redirect_url } = req.query;
-    const { callerProtocol, callerDomain, callerPath, userId } = urlToObject(state);
-    const doc = checkIfUserExist(userId);
-    // TODO: The temporary authorizationurl should be set expiration date
+    const { callerProtocol, callerDomain, callerPath, userId, accessId } = urlToObject(state);
+    const doc = await checkIfUserAndAccessIdExist(userId, accessId);
     if (!doc) {
       return error({
         res,
@@ -37,6 +53,7 @@ const authorize = (app) => {
         errorMessage: 'The authorization url has expired. Please sign up again to get the authorization url.'
       });
     }
+    authorizeUser(userId);
     const accessTokenPayload = {
       iss: ISSUER,
       aud: `${callerProtocol}://${callerDomain}/${callerPath}`,
