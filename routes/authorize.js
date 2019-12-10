@@ -53,7 +53,6 @@ const authorize = (app) => {
     //     domain: callerDomain
     //   })
     //  .redirect(307, redirect_url);
-    console.log('pass ? ');
     res
       .set('Authorization', `Bearer ${accessToken}`)
       .status(200)
