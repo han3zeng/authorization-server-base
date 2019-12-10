@@ -2,23 +2,31 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Accesslist = mongoose.model('Accesslist');
+const Blacklist = mongoose.model('Blacklist');
+
 const { urlToObject, getCredentials } = require('../utils');
 const { error } = require('../utils/responses');
 const { ISSUER } = require('../constants/payload');
+const uuidv1 = require('uuid/v1');
+
 const { ACCESS_TOKEN } = getCredentials();
 
-const expireAt = (isMillionSecs) => {
-  return (dayInterval = 7) => {
-    if (isMillionSecs) {
-      return Date.now() + dayInterval * 24 * 60 * 60 * 1000;
-    } else {
-      return Date.now() + dayInterval * 24 * 60 * 60;
-    }
-  };
+const getExpireAt = (dayInterval = 7) => {
+  return Date.now() + dayInterval * 24 * 60 * 60 * 1000;
 };
 
 const authorizeUser = async (_id) => {
-  const res = await User.updateOne({ _id }, { $set: { authorized: true } });
+  await User.updateOne({ _id }, { $set: { authorized: true } });
+};
+
+const createBacklist = async ({
+  jti,
+  expireAt
+}) => {
+  await Blacklist.create({
+    jti,
+    expireAt
+  });
 };
 
 const checkIfUserAndAccessIdExist = async (_id, attemptAccessId) => {
@@ -54,13 +62,17 @@ const authorize = (app) => {
       });
     }
     authorizeUser(userId);
+    const expireAt = getExpireAt(7);
+    const jti = uuidv1();
+    createBacklist({ jti, expireAt });
     const accessTokenPayload = {
       iss: ISSUER,
       aud: `${callerProtocol}://${callerDomain}/${callerPath}`,
       sub: `user_${userId}`,
       scope: 'undefined',
       iat: Math.floor(Date.now() / 1000),
-      exp: expireAt(false)(7)
+      exp: expireAt / 1000,
+      jti
     };
     const accessToken = jwt.sign(accessTokenPayload, ACCESS_TOKEN);
     // res
