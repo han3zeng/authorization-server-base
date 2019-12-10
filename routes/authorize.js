@@ -46,13 +46,18 @@ const authorize = (app) => {
       exp: expireAt(false)(7)
     };
     const accessToken = jwt.sign(accessTokenPayload, ACCESS_TOKEN);
+    // res
+    //   .cookie('access_token', accessToken, {
+    //     expires: new Date(expireAt(true)(7)),
+    //     httpOnly: true,
+    //     domain: callerDomain
+    //   })
+    //  .redirect(307, redirect_url);
+    console.log('pass ? ');
     res
-      .cookie('access_token', accessToken, {
-        expires: new Date(expireAt(true)(7)),
-        httpOnly: true,
-        domain: callerDomain
-      })
-      .redirect(307, redirect_url);
+      .set('Authorization', `Bearer ${accessToken}`)
+      .status(200)
+      .end();
   });
 };
 
