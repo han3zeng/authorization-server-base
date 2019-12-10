@@ -49,13 +49,24 @@
 * [ ] login
     * check if accessToken is in the blacklist
     * check if the token has expired
-* [ ] blacklist related functions
+* [ ] blacklist related functions (for invalid tokens)
     * logout
     * login
     * invalid all tokens
-* [ ] encrypt the credentials file
+* [x] encrypt the credentials file
     * [ref](https://gist.github.com/kzap/5819745)
     * [ref](https://docs.travis-ci.com/user/encryption-keys/)
+* [x] change password hash
+* [x] return access token in authorization header
+* [x] generate random access id for email confirmation
+    * https://stackoverflow.com/questions/14576516/create-a-unique-id-for-email-confirmation
+* [ ] add jti to payload of accessToken and APIkey
+    * use UUID ???
+* [ ] corn job to delete accesslist and backlist
+* [ ] checkIfUserAndAccessIdExist
+    * validation: authorized true
+    * error + response message
+    * duplicated blacklist
 
 ## References
 * [base](https://medium.com/better-programming/authentication-and-authorization-using-jwt-with-node-js-4099b2e6ca1f)
