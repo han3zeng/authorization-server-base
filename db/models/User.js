@@ -4,6 +4,8 @@ const userPrototype = {
   username: String,
   email: String,
   password: String,
+  iterations: Number,
+  salt: String,
   firstName: String,
   lastName: String,
   authorized: {

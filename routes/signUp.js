@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const sendMail = require('../utils/sendMail');
 const { objectToUrl, getCredentials } = require('../utils');
 const { error, success } = require('../utils/responses');
+const { hashPassword } = require('../utils');
 const config = require('../config');
+
 const { PASSWORD_SECRET_KEY } = getCredentials();
 
 const User = mongoose.model('User');
@@ -54,11 +56,13 @@ const signUp = (app) => {
       });
     } else {
       try {
-        const hashedPassword = jwt.sign({ email, password }, PASSWORD_SECRET_KEY).split('.')[2];
+        const { hash, salt, iterations } = hashPassword(password);
         const newDoc = {
           username,
           email,
-          password: hashedPassword,
+          password: hash,
+          iterations,
+          salt,
           firstName,
           lastName,
           authorized: false
