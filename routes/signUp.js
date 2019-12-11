@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const sendMail = require('../utils/sendMail');
 const { objectToUrl } = require('../utils');
 const { error, success } = require('../utils/responses');
-const { hashPassword } = require('../utils');
+const { hashPassword } = require('../utils/userServices');
 const config = require('../config');
 
 // const { PASSWORD_SECRET_KEY } = getCredentials();

@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
 
 const objectToUrl = (obj) => {
   try {
@@ -31,31 +30,9 @@ const getCredentials = () => {
   }
 };
 
-const hashPassword = (password) => {
-  const { randomBytes, pbkdf2Sync } = crypto;
-  const salt = randomBytes(128).toString('base64');
-  const iterations = 10000;
-  const hash = pbkdf2Sync(password, salt, iterations, 64, 'sha512').toString('hex');
-  return {
-    hash,
-    salt,
-    iterations
-  };
-};
-
-const verfiyPassword = ({
-  hash,
-  salt,
-  iterations,
-  attemptPassword
-}) => {
-  return crypto.pbkdf2Sync(attemptPassword, salt, iterations, '64', 'sha512').toString('hex');
-};
 
 module.exports = {
   urlToObject,
   objectToUrl,
-  getCredentials,
-  hashPassword,
-  verfiyPassword
+  getCredentials
 };

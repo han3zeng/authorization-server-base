@@ -31,5 +31,7 @@ const helloWorld = require('../routes/helloWorld');
 helloWorld(app);
 const signUp = require('../routes/signUp');
 signUp(app);
+const signIn = require('../routes/signIn');
+signIn(app);
 
 module.exports = app;
