@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Accesslist = mongoose.model('Accesslist');
-const Blacklist = mongoose.model('Blacklist');
 
 const { urlToObject, getCredentials } = require('../utils');
 const { error } = require('../utils/responses');
@@ -19,33 +18,45 @@ const authorizeUser = async (_id) => {
   await User.updateOne({ _id }, { $set: { authorized: true } });
 };
 
-const createBacklist = async ({
-  jti,
-  expireAt
+const checkIfUserAndAccessIdExist = async ({
+  res,
+  _id,
+  attemptAccessId
 }) => {
-  await Blacklist.create({
-    jti,
-    expireAt
-  });
-};
-
-const checkIfUserAndAccessIdExist = async (_id, attemptAccessId) => {
   const userDoc = await User.findOne({ _id });
   const accessIdDoc = await Accesslist.findOne({ userId: _id, accessId: attemptAccessId });
-  const { expireAt, accessId } = accessIdDoc;
+  let status = null;
+  let errorMessage = null;
   if (!userDoc || !accessIdDoc) {
-    return null;
-  }
-  try {
-    if ((Date.parse(expireAt) >= Date.now()) && (accessId === attemptAccessId)) {
-      return {
-        userDoc,
-        accessIdDoc
-      };
+    status = 500;
+    errorMessage = 'System error. the autho-server do not create the user or accessId properly.';
+  } else {
+    const { authorized } = userDoc;
+    if (authorized) {
+      status = 409;
+      errorMessage = 'Data Conflict. The user has been authorized and confered the access token.';
+    } else {
+      const { expireAt } = accessIdDoc;
+      try {
+        if ((Date.parse(expireAt) >= Date.now())) {
+          return {
+            userDoc,
+            accessIdDoc
+          };
+        }
+        status = 401;
+        errorMessage = 'Unauthorized. Your url has been expired.';
+      } catch (e) {
+        status = 500;
+        errorMessage = 'System error. Date parse error';
+      }
     }
-  } catch (e) {
-    return null;
   }
+  error({
+    res,
+    status,
+    errorMessage
+  });
   return null;
 };
 
@@ -53,18 +64,17 @@ const authorize = (app) => {
   app.get('/oauth/authorize', async (req, res) => {
     const { client_id, response_type, state, redirect_url } = req.query;
     const { callerProtocol, callerDomain, callerPath, userId, accessId } = urlToObject(state);
-    const doc = await checkIfUserAndAccessIdExist(userId, accessId);
+    const doc = await checkIfUserAndAccessIdExist({
+      res,
+      userId,
+      accessId
+    });
     if (!doc) {
-      return error({
-        res,
-        status: 500,
-        errorMessage: 'The authorization url has expired. Please sign up again to get the authorization url.'
-      });
+      return;
     }
     authorizeUser(userId);
     const expireAt = getExpireAt(7);
     const jti = uuidv1();
-    createBacklist({ jti, expireAt });
     const accessTokenPayload = {
       iss: ISSUER,
       aud: `${callerProtocol}://${callerDomain}/${callerPath}`,
