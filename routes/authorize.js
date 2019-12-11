@@ -20,11 +20,11 @@ const authorizeUser = async (_id) => {
 
 const checkIfUserAndAccessIdExist = async ({
   res,
-  _id,
+  userId,
   attemptAccessId
 }) => {
-  const userDoc = await User.findOne({ _id });
-  const accessIdDoc = await Accesslist.findOne({ userId: _id, accessId: attemptAccessId });
+  const userDoc = await User.findOne({ _id: userId });
+  const accessIdDoc = await Accesslist.findOne({ userId, accessId: attemptAccessId });
   let status = null;
   let errorMessage = null;
   if (!userDoc || !accessIdDoc) {
@@ -45,7 +45,7 @@ const checkIfUserAndAccessIdExist = async ({
           };
         }
         status = 401;
-        errorMessage = 'Unauthorized. Your url has been expired.';
+        errorMessage = 'Unauthorized. Your url has been expired. Please signup again to get a new eamil';
       } catch (e) {
         status = 500;
         errorMessage = 'System error. Date parse error';
@@ -67,7 +67,7 @@ const authorize = (app) => {
     const doc = await checkIfUserAndAccessIdExist({
       res,
       userId,
-      accessId
+      attemptAccessId: accessId
     });
     if (!doc) {
       return;
