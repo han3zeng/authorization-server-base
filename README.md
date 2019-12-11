@@ -60,13 +60,17 @@
 * [x] return access token in authorization header
 * [x] generate random access id for email confirmation
     * https://stackoverflow.com/questions/14576516/create-a-unique-id-for-email-confirmation
-* [ ] add jti to payload of accessToken and APIkey
+* [x] add jti to payload of accessToken and APIkey
     * use UUID ???
 * [ ] corn job to delete accesslist and backlist
 * [ ] checkIfUserAndAccessIdExist
     * validation: authorized true
     * error + response message
     * duplicated blacklist
+* [x] change password
+* [ ] signout
+* [ ] forget password
+* [ ] signin/changePassword need to check authorized key
 
 ## References
 * [base](https://medium.com/better-programming/authentication-and-authorization-using-jwt-with-node-js-4099b2e6ca1f)
