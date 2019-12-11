@@ -38,9 +38,8 @@ const reproducePasswordHash = ({
   return crypto.pbkdf2Sync(attemptPassword, salt, iterations, 64, 'sha512').toString('hex');
 };
 
-const passwordValidation = async ({ email, attemptPassword }) => {
-  const doc = await User.findOne({ email });
-  // console.log('doc: ', doc);
+const passwordValidation = async ({ userId, email, attemptPassword }) => {
+  const doc = await ifUserExist({ userId, email });
   if (!doc) {
     return false;
   }
@@ -50,17 +49,27 @@ const passwordValidation = async ({ email, attemptPassword }) => {
     iterations,
     attemptPassword
   });
-  // console.log('hashReplica: ', hashReplica);
-  // console.log('password: ', password);
   if (hashReplica === password) {
     return true;
   }
   return false;
 };
 
+const updatePassword = async ({ userId, password }) => {
+  const hashRes = hashPassword(password);
+  const { salt, iterations, hash } = hashRes;
+  const doc = await User.updateOne({ _id: userId }, { $set: { salt, iterations, password: hash } });
+  if (doc) {
+    return doc;
+  } else {
+    return null;
+  }
+};
+
 module.exports = {
   emailValidation,
   passwordValidation,
   hashPassword,
-  ifUserExist
+  ifUserExist,
+  updatePassword
 };
