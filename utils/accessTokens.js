@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Blacklist = mongoose.model('Blacklist');
 const jwt = require('jsonwebtoken');
 const { getCredentials } = require('../utils');
+const { ISSUER } = require('../constants/payload');
+const uuidv1 = require('uuid/v1');
 const { ACCESS_TOKEN } = getCredentials();
 
 const checkIfTokenInBlacklist = async (accessToken) => {
@@ -82,8 +84,34 @@ const tokenValidation = async (authorizationHeader) => {
   });
 };
 
+const getExpireAt = (dayInterval = 7) => {
+  return Date.now() + dayInterval * 24 * 60 * 60 * 1000;
+};
+
+const generateToken = ({
+  callerProtocol,
+  callerDomain,
+  callerPath,
+  sub,
+  scope = 'undefined',
+  expDaysInterval = 7
+}) => {
+  const expireAt = getExpireAt(expDaysInterval);
+  const accessTokenPayload = {
+    iss: ISSUER,
+    aud: `${callerProtocol}://${callerDomain}/${callerPath}`,
+    sub: sub,
+    scope,
+    iat: Math.floor(Date.now() / 1000),
+    exp: expireAt / 1000,
+    jti: uuidv1()
+  };
+  return jwt.sign(accessTokenPayload, ACCESS_TOKEN);
+};
+
 module.exports = {
   checkIfTokenInBlacklist,
   addTokenToBlacklist,
-  tokenValidation
+  tokenValidation,
+  generateToken
 };
