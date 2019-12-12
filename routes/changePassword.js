@@ -8,7 +8,7 @@ const _ = {
 };
 
 const changePassword = (app) => {
-  app.post('/user/change-password', async (req, res) => {
+  app.patch('/user/change-password', async (req, res) => {
     const authoriztionHeader = req.get('Authorization');
     const validationResult = await validation(authoriztionHeader);
     if (!validationResult.ok) {
