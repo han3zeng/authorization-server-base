@@ -1,7 +1,5 @@
-const { emailValidation, passwordValidation, ifUserExist } = require('../utils/userServices');
+const { emailValidation, passwordValidation } = require('../utils/userServices');
 const { error, success } = require('../utils/responses');
-
-// const { validation } = require('../utils/accessTokens');
 
 const validation = async (email, password) => {
   let ok = false;
@@ -14,15 +12,18 @@ const validation = async (email, password) => {
   } else if (!emailValidation(email)) {
     status = 400;
     errorMessage = 'Bad Request. Email syntax error';
-  } else if (!await ifUserExist({ email })) {
-    status = 400;
-    errorMessage = 'Bad Request. Email has no match user record';
-  } else if (!await passwordValidation({ email, attemptPassword: password })) {
-    status = 403;
-    errorMessage = 'Forbidden. password is not correct';
   } else {
-    ok = true;
-    status = 200;
+    const result = await passwordValidation({ email, attemptPassword: password });
+    if (result.status === 0) {
+      status = 400;
+      errorMessage = 'Bad Request. Email has no match user record or the user has the record but not been authorized';
+    } else if (result.status === 1) {
+      status = 403;
+      errorMessage = 'Forbidden. password is not correct';
+    } else {
+      ok = true;
+      status = 200;
+    }
   }
   return Object.freeze({
     ok,
@@ -34,14 +35,6 @@ const validation = async (email, password) => {
 const signIn = (app) => {
   app.post('/user/signin', async (req, res) => {
     const { email, password } = req.body;
-    // const validationResult = await validation(req.get('Authorization'));
-    // if (!validationResult.ok) {
-    //   return error({
-    //     res,
-    //     status: validationResult.status,
-    //     errorMessage: validationResult.errorMessage
-    //   });
-    // }
     const validationResult = await validation(email, password);
     if (!validationResult.ok) {
       const {

@@ -10,12 +10,34 @@ const emailValidation = (email) => {
   return regex.test(email);
 };
 
+/**
+ * @param {object} searchQuery - search queary for user model
+ * @property {string} userId - userId assign by sign up process (mongodb _id for user doc)
+ * @property {string} email - email that user used to apply account
+ * @return {object} searchResult
+ * @property {status} 0: user not found, 1: user found but not authorized, 2 user found and authorized
+ * @property {object} doc - user document
+*/
+
 const ifUserExist = async ({ userId, email }) => {
   const doc = await User.findOne({ $or: [{ _id: userId }, { email }] });
   if (doc) {
-    return doc;
+    if (doc.authorized) {
+      return {
+        status: 2,
+        doc
+      };
+    } else {
+      return {
+        status: 1,
+        doc
+      };
+    }
   }
-  return null;
+  return {
+    status: 0,
+    doc: null
+  };
 };
 
 const hashPassword = (password) => {
@@ -38,21 +60,44 @@ const reproducePasswordHash = ({
   return crypto.pbkdf2Sync(attemptPassword, salt, iterations, 64, 'sha512').toString('hex');
 };
 
+/**
+ * @param {object} validation - three basic elements that used to do user authentication
+ * @param {string} validation.userId - assigned userId from signup process - choose either one of userId || email
+ * @param {string} validation.email - email that user used to apply account - choose either one of userId || email
+ * @param {string} validation.attemptPassword - the password that user type in the input bar
+ * @returns {object} validationResult: which has three properties ok, status, data
+ * @property {boolean} ok - valid: true/false
+ * @property {number} status - 0: user dose not exist, 1: invalid+user exist 2. valid+ user exist
+ * @property {object|null} doc - object: user doc from mongodb database, null: has no such user
+*/
+
 const passwordValidation = async ({ userId, email, attemptPassword }) => {
-  const doc = await ifUserExist({ userId, email });
-  if (!doc) {
-    return false;
+  const userDoc = await ifUserExist({ userId, email });
+  if (userDoc.status !== 2) {
+    return {
+      ok: false,
+      status: 0,
+      doc: null
+    };
   }
-  const { iterations, salt, password } = doc;
+  const { iterations, salt, password } = userDoc;
   const hashReplica = reproducePasswordHash({
     salt,
     iterations,
     attemptPassword
   });
   if (hashReplica === password) {
-    return true;
+    return {
+      ok: true,
+      status: 2,
+      doc: userDoc
+    };
   }
-  return false;
+  return {
+    ok: false,
+    status: 1,
+    doc: null
+  };
 };
 
 const updatePassword = async ({ userId, password }) => {
