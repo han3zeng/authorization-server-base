@@ -35,5 +35,7 @@ const signIn = require('../routes/signIn');
 signIn(app);
 const changePassword = require('../routes/changePassword');
 changePassword(app);
+const signOut = require('../routes/signOut');
+signOut(app);
 
 module.exports = app;
