@@ -72,15 +72,17 @@ const reproducePasswordHash = ({
 */
 
 const passwordValidation = async ({ userId, email, attemptPassword }) => {
-  const userDoc = await ifUserExist({ userId, email });
-  if (userDoc.status !== 2) {
+  console.log('attemptPassword: ', attemptPassword);
+  const response = await ifUserExist({ userId, email });
+  const { doc } = response;
+  if (response.status !== 2) {
     return {
       ok: false,
       status: 0,
       doc: null
     };
   }
-  const { iterations, salt, password } = userDoc;
+  const { iterations, salt, password } = doc;
   const hashReplica = reproducePasswordHash({
     salt,
     iterations,
@@ -90,7 +92,7 @@ const passwordValidation = async ({ userId, email, attemptPassword }) => {
     return {
       ok: true,
       status: 2,
-      doc: userDoc
+      doc
     };
   }
   return {
