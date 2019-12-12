@@ -1,4 +1,4 @@
-const { validation } = require('../utils/accessTokens');
+const { tokenValidation } = require('../utils/accessTokens');
 const { error, success } = require('../utils/responses');
 const { passwordValidation, updatePassword } = require('../utils/userServices');
 const _get = require('lodash/get');
@@ -10,7 +10,7 @@ const _ = {
 const changePassword = (app) => {
   app.patch('/user/change-password', async (req, res) => {
     const authoriztionHeader = req.get('Authorization');
-    const validationResult = await validation(authoriztionHeader);
+    const validationResult = await tokenValidation(authoriztionHeader);
     if (!validationResult.ok) {
       const { status, errorMessage } = validationResult;
       return error({

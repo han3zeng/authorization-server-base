@@ -43,7 +43,7 @@ const ifExistInBlacklist = async (jti) => {
   return false;
 };
 
-const validation = async (authorizationHeader) => {
+const tokenValidation = async (authorizationHeader) => {
   let status = null;
   let errorMessage = null;
   let ok = false;
@@ -85,5 +85,5 @@ const validation = async (authorizationHeader) => {
 module.exports = {
   checkIfTokenInBlacklist,
   addTokenToBlacklist,
-  validation
+  tokenValidation
 };
