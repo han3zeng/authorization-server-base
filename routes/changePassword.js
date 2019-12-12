@@ -25,13 +25,13 @@ const changePassword = (app) => {
       userId: subid,
       attemptPassword: originalPassword
     });
-    if (!pwValidtionResult.status === 0) {
+    if (pwValidtionResult.status === 0) {
       error({
         res,
         status: 400,
         errorMessage: 'Bad Request. the subId has no match user record or the collection has the doc record but the doc has not been authorized'
       });
-    } else if (!pwValidtionResult.status === 1) {
+    } else if (pwValidtionResult.status === 1) {
       error({
         res,
         status: 403,
