@@ -1,6 +1,6 @@
 {
   "name": "authorization-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "the authorization server for login system",
   "main": "index.js",
   "scripts": {
