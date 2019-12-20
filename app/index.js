@@ -27,6 +27,10 @@ authorize(app);
 app.use(clientAPIKeyValidation);
 
 // routes
+const retrieveUserProfile = require('../routes/retrieveUserProfile');
+retrieveUserProfile(app);
+const verifyToken = require('../routes/verifyToken');
+verifyToken(app);
 const helloWorld = require('../routes/helloWorld');
 helloWorld(app);
 const signUp = require('../routes/signUp');
