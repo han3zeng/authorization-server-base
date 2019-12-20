@@ -75,7 +75,9 @@
 * [ ] forget password
 * [x] signin need to check authorized key
 * [x] changePassword need to check authorized key
-* [] authorize + signin -> block the old token ?
+* [x] authorize + signin -> block the old token ?
+* [] csrf token
+* [] tokenValidation need to check expiration date
 
 ## References
 * [base](https://medium.com/better-programming/authentication-and-authorization-using-jwt-with-node-js-4099b2e6ca1f)
