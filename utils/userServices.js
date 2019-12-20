@@ -72,7 +72,6 @@ const reproducePasswordHash = ({
 */
 
 const passwordValidation = async ({ userId, email, attemptPassword }) => {
-  console.log('attemptPassword: ', attemptPassword);
   const response = await ifUserExist({ userId, email });
   const { doc } = response;
   if (response.status !== 2) {
