@@ -42,7 +42,8 @@ const generateAuthorizationURL = async ({
       accessId
     })}`;
     const redirectUrl = `redirect_url=${doc.redirectUrl}`;
-    return `${origin}/${path}?${clientId}&${responseType}&${state}&${redirectUrl}`;
+    const redirectUrlDev = `redirect_url_dev=${doc.redirectUrlDev}`;
+    return `${origin}/${path}?${clientId}&${responseType}&${state}&${redirectUrl}&${redirectUrlDev}`;
   }
   return null;
 };
