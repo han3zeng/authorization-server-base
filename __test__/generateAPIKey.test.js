@@ -28,6 +28,7 @@ describe('POST generateAPIKey', () => {
         service: 'portfolio-and-trial',
         organization: 'hans-lab',
         redirectUrl: 'testurl',
+        redirectUrlDeb: 'testurlDEV'
         origin: 'testurl',
         device: 'web',
         adminApiKey: 'TEST_API_KEY'

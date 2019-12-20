@@ -7,7 +7,7 @@ const Client = mongoose.model('Client');
 const { SECRET_ADMIN_API_KEY } = getCredentials();
 
 const bodyPassValidation = (req, res) => {
-  const { adminApiKey, service, organization, redirectUrl, origin, device } = req.body;
+  const { adminApiKey, service, organization, redirectUrl, redirectUrlDev, origin, device } = req.body;
   if (!adminApiKey || (adminApiKey && adminApiKey !== SECRET_ADMIN_API_KEY)) {
     res.status(410).json({
       error: 'Permission Deined'
@@ -16,7 +16,7 @@ const bodyPassValidation = (req, res) => {
   }
   let message = '';
   let result = true;
-  if (service === null || organization === '' || redirectUrl === '' || origin === '' || device === '') {
+  if (service === null || organization === '' || redirectUrl === '' || redirectUrlDev === '' || origin === '' || device === '') {
     result = false;
     message = 'these keys are mandatory: service, organization, redirectUrl, device';
   } else if (device !== 'web' && device !== 'app') {
@@ -37,7 +37,7 @@ const bodyPassValidation = (req, res) => {
 
 const generateAPIKey = (app) => {
   app.post('/generate-api-key', async (req, res) => {
-    const { service, organization, redirectUrl, origin, device } = req.body;
+    const { service, organization, redirectUrl, redirectUrlDev, origin, device } = req.body;
     if (nodeEnv !== 'test' && !bodyPassValidation(req, res)) {
       return;
     }
@@ -56,6 +56,7 @@ const generateAPIKey = (app) => {
           origin,
           device,
           redirectUrl,
+          redirectUrlDev,
           apiKey: token,
           createdAt: new Date(),
           updatedAt: new Date()
