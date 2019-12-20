@@ -45,6 +45,8 @@ const ifExistInBlacklist = async (jti) => {
   return false;
 };
 
+
+// TODO: expiration
 const tokenValidation = async (authorizationHeader) => {
   let status = null;
   let errorMessage = null;
