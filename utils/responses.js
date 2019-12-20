@@ -8,7 +8,7 @@ const error = ({ res, status, errorMessage }) => {
   });
 };
 
-const success = ({ res, status, data, statusCode }) => {
+const success = ({ res, status, data, statusCode = null }) => {
   res.status(status).json({
     ok: true,
     status,
