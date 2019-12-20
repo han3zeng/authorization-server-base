@@ -5,15 +5,17 @@ const clientPrototype = {
   organization: String,
   apiKey: String,
   redirectUrl: String,
+  redirectUrlDev: String,
   origin: String,
+  resourceServerOrigin: String,
   device: String,
   updatedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   }
 };
 

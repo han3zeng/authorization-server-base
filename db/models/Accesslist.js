@@ -9,7 +9,11 @@ const AccesslistPrototype = {
   },
   updatedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now()
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now()
   }
 };
 const AcccesslistSchema = Schema(AccesslistPrototype);
