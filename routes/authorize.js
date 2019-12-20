@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Accesslist = mongoose.model('Accesslist');
 
+const config = require('../config');
 const { urlToObject, getCredentials } = require('../utils');
 const { error } = require('../utils/responses');
 const { ISSUER } = require('../constants/payload');
 const uuidv1 = require('uuid/v1');
 
 const { ACCESS_TOKEN } = getCredentials();
+const { nodeEnvIsProd } = config;
 
 const getExpireAt = (dayInterval = 7) => {
   return Date.now() + dayInterval * 24 * 60 * 60 * 1000;
@@ -62,7 +64,7 @@ const checkIfUserAndAccessIdExist = async ({
 
 const authorize = (app) => {
   app.get('/oauth/authorize', async (req, res) => {
-    const { client_id, response_type, state, redirect_url } = req.query;
+    const { client_id, response_type, state, redirect_url, redirect_url_dev } = req.query;
     const { callerProtocol, callerDomain, callerPath, userId, accessId } = urlToObject(state);
     const doc = await checkIfUserAndAccessIdExist({
       res,
@@ -81,21 +83,20 @@ const authorize = (app) => {
       sub: `user_${userId}`,
       scope: 'undefined',
       iat: Math.floor(Date.now() / 1000),
-      exp: expireAt / 1000,
+      exp: Math.floor(expireAt / 1000),
       jti
     };
     const accessToken = jwt.sign(accessTokenPayload, ACCESS_TOKEN);
-    // res
-    //   .cookie('access_token', accessToken, {
-    //     expires: new Date(expireAt(true)(7)),
-    //     httpOnly: true,
-    //     domain: callerDomain
-    //   })
-    //  .redirect(307, redirect_url);
-    res
-      .set('Authorization', `Bearer ${accessToken}`)
-      .status(200)
-      .end();
+    const redirectUrl = nodeEnvIsProd ? redirect_url : redirect_url_dev;
+    if (redirectUrl) {
+      res
+        .redirect(302, `${redirectUrl}?accessToken=${accessToken}`);
+    } else {
+      res
+        .set('Authorization', `Bearer ${accessToken}`)
+        .status(200)
+        .end();
+    }
   });
 };
 
