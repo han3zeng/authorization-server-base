@@ -10,6 +10,14 @@ const emailValidation = (email) => {
   return regex.test(email);
 };
 
+const passwordPrimitiveValidation = (password) => {
+  if (typeof password !== 'string') {
+    return false;
+  }
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/;
+  return regex.test(password);
+}
+
 /**
  * @param {object} searchQuery - search queary for user model
  * @property {string} userId - userId assign by sign up process (mongodb _id for user doc)
@@ -117,5 +125,6 @@ module.exports = {
   passwordValidation,
   hashPassword,
   ifUserExist,
-  updatePassword
+  updatePassword,
+  passwordPrimitiveValidation
 };

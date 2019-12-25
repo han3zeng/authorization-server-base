@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const sendMail = require('../utils/sendMail');
 const { objectToUrl } = require('../utils');
 const { error, success } = require('../utils/responses');
-const { hashPassword } = require('../utils/userServices');
+const { hashPassword, emailValidation, passwordPrimitiveValidation } = require('../utils/userServices');
 const config = require('../config');
 
 // const { PASSWORD_SECRET_KEY } = getCredentials();
@@ -53,13 +53,14 @@ const generateTMPAccessId = async (userId) => {
   const doc = Accesslist.create({
     userId,
     accessId: hash,
-    salt,
-    iterations
+    expireAt: Date.now() + 10 * 60 * 1000,
+    updatedAt: Date.now(),
+    createdAt: Date.now()
   });
   if (doc) {
     return hash;
   } else {
-    throw new Error('can not crate the accessId');
+    throw new Error('can not create the accessId');
   }
 };
 
@@ -97,6 +98,36 @@ const preparationForAuthorization = async ({ req, res, email, doc, apiKey }) => 
   }
 };
 
+
+const formValidation = ({ res, username, email, password, firstName, lastName }) => {
+  let result = true;
+  if (!email || !password) {
+    error({
+      res,
+      status: 400,
+      errorMessage: 'email and password are mendatory'
+    });
+    res = false;
+  }
+  if (!emailValidation(email)) {
+    error({
+      res,
+      status: 400,
+      errorMessage: 'email is invalid'
+    });
+    res = false;
+  }
+  if (!passwordPrimitiveValidation(password)) {
+    error({
+      res,
+      status: 400,
+      errorMessage: 'the password requires at least one lowercase letter, one uppercase letter and one number'
+    });
+    res = false;
+  }
+  return result;
+};
+
 /**
  * @param {object} - instance of express()
  * @returns {null} - express res
@@ -107,12 +138,14 @@ const signUp = (app) => {
     const { username, email, password, firstName, lastName } = req.body;
     const apiKey = req.get('API-Key');
     const userProfile = await checkIfUserExist(email);
+    if (!formValidation({ res, username, email, password, firstName, lastName })) {
+      return;
+    };
     if (userProfile && userProfile.authorized) {
-      success({
+      error({
         res,
-        status: 200,
-        data: null,
-        statusCode: 0
+        status: 400,
+        errorMessage: 'the email has been used'
       });
     } else if (userProfile && !userProfile.authorized) {
       preparationForAuthorization({
@@ -151,7 +184,7 @@ const signUp = (app) => {
         error({
           res,
           status: 500,
-          errorMessage: 'System Error'
+          errorMessage: `System Error: ${e}`
         });
       }
     }
