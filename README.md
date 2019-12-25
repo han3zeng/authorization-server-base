@@ -8,7 +8,7 @@
     * Dev: `3030`
     * Prod: `8080`
 
-##
+## Flow
 1. project get `clientId === API_KEY`
 2. user signs up to get tmp accessId link
 3. user requests the server to authorize and receives accessToken
@@ -17,6 +17,12 @@
     * system check blacklist
     * any restricted resource manipulations need accessToken and server needs to the accessToken is not in the blacklist
 6. user signs out and the token will be put in blacklist
+
+<a
+  href="./assets/authorization_code_flow.pdf">Authorization Code Flow
+</a>
+
+
 
 ## Key Variables
 * API_KEY: project authorization
