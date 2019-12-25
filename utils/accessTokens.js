@@ -108,7 +108,10 @@ const generateToken = ({
     exp: expireAt / 1000,
     jti: uuidv1()
   };
-  return jwt.sign(accessTokenPayload, ACCESS_TOKEN);
+  return {
+    token: jwt.sign(accessTokenPayload, ACCESS_TOKEN),
+    payload: accessTokenPayload
+  };
 };
 
 module.exports = {

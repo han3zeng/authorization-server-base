@@ -67,20 +67,36 @@ const signIn = (app) => {
     const callerProtocol = req.protocol;
     const callerDomain = req.get('host');
     const callerPath = req.originalUrl;
-    const token = generateToken({
+    const { token, payload } = generateToken({
       callerProtocol,
       callerDomain,
       callerPath,
       sub: `user_${_id.toString()}`
     });
     res.set('Authorization', `Bearer ${token}`);
-    success({
+    const userProfile = {};
+    const targetedProperties = [
+      'firstName',
+      'lastName',
+      'username',
+      'email',
+      '_id',
+      'createdAt',
+      'updatedAt'
+    ];
+    targetedProperties.forEach((prop, index) => {
+      userProfile[prop] = doc[prop];
+    });
+    return success({
       res,
       status: 200,
       data: {
-        message: 'user signin successfully'
-      },
-      statusCode: 1
+        userProfile,
+        token: {
+          jwt: token,
+          exp: _.get(payload, 'exp', null)
+        }
+      }
     });
   });
 };
