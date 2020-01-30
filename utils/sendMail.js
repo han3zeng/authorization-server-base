@@ -7,6 +7,7 @@ async function sendMail ({ senderAcount, text, html, target }) {
   // const testAccount = await nodemailer.createTestAccount();
 
   const transporter = nodemailer.createTransport({
+    port: '2525',
     service: 'gmail',
     auth: {
       user: ADMIN_EMAIL, // generated ethereal user
