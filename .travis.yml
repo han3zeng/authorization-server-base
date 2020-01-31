@@ -11,4 +11,4 @@ install:
 before_script:
 - npm install
 script:
-- npm run test && gcloud -q app deploy app.yaml --promote --version 1-0-7
+- npm run test && gcloud -q app deploy app.yaml --promote --version 1-0-8
