@@ -1,12 +1,9 @@
-// const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const sendMail = require('../utils/sendMail');
 const { objectToUrl } = require('../utils');
 const { error, success } = require('../utils/responses');
 const { hashPassword, emailValidation, passwordPrimitiveValidation } = require('../utils/userServices');
 const config = require('../config');
-
-// const { PASSWORD_SECRET_KEY } = getCredentials();
 
 const User = mongoose.model('User');
 const Client = mongoose.model('Client');
@@ -80,7 +77,7 @@ const preparationForAuthorization = async ({ req, res, email, doc, apiKey }) => 
   });
   if (authorizationUrl) {
     sendMail({
-      text: authorizationUrl,
+      authUrl: authorizationUrl,
       target: email
     });
     success({
@@ -98,32 +95,31 @@ const preparationForAuthorization = async ({ req, res, email, doc, apiKey }) => 
   }
 };
 
-
 const formValidation = ({ res, username, email, password, firstName, lastName }) => {
   let result = true;
   if (!email || !password) {
+    result = false;
     error({
       res,
       status: 400,
       errorMessage: 'email and password are mendatory'
     });
-    res = false;
-  }
-  if (!emailValidation(email)) {
+  } else if (!emailValidation(email)) {
+    result = false;
     error({
       res,
       status: 400,
       errorMessage: 'email is invalid'
     });
-    res = false;
-  }
-  if (!passwordPrimitiveValidation(password)) {
-    error({
-      res,
-      status: 400,
-      errorMessage: 'the password requires at least one lowercase letter, one uppercase letter and one number'
-    });
-    res = false;
+  } else {
+    if (!passwordPrimitiveValidation(password)) {
+      result = false;
+      error({
+        res,
+        status: 400,
+        errorMessage: 'the password requires at least one lowercase letter, one uppercase letter and one number'
+      });
+    }
   }
   return result;
 };
